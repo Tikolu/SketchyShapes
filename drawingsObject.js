@@ -1,103 +1,33 @@
-import { ShapeTypes, ObjectProperties } from "./definitions.js"
+import { ObjectTypes, ShapeTypes } from "./definitions.js"
+import * as Serialiser from "./serialiser.js"
 
+function createEnum(obj) {
+	const enumObj = {}
+	for(const key in obj) {
+		const label = obj[key].toUpperCase().replaceAll(" ", "_")
+		enumObj[label] = Number(key)
+	}
+	return Object.freeze(enumObj)
+}
 
 class DrawingsObject {
-	static TYPE = {
-		GROUP: 2,
-		SHAPE: 3
-	}
+	static TYPE = createEnum(ObjectTypes)
 
 	static generateID() {
 		return `ga${Math.random().toString(16).slice(6)}`
 	}
 
-	// Unpacks properties array into an object
-	static parseProperties(data) {
-		const properties = {}
-		for(let i = 0; i < data.length; i += 2) {
-			const key = ObjectProperties[data[i]]
-			if(!key) continue
-			properties[key] = data[i + 1]
-		}
-		return properties
-	}
-	
-	// Creates a DrawingsObject from data array
 	static fromArray(data) {
-		const objectType = data[0]
-		const positionData = data[3]
-
-		let objectData = {
-			id: data[1],
-			x: positionData[4],
-			y: positionData[5],
-			width: positionData[0],
-			height: positionData[3],
-			skewX: positionData[1],
-			skewY: positionData[2]
-		}
-
-		if(objectType == DrawingsObject.TYPE.SHAPE) {
-			objectData.shapeType = data[2]
-
-			objectData = {
-				...objectData,
-				...DrawingsObject.parseProperties(data[4])
-			}
-
-			return new DrawingsShape(objectData)
-		}
-
-		else if(objectType == DrawingsObject.TYPE.GROUP) {
-			objectData.objectIDs = data[2]
-			return new DrawingsGroup(objectData)
-		}
-
-		else {
-			console.warn(`Unknown object type: ${objectType}`)
-			return new DrawingsObject(objectType, objectData)
-		}
-
-	}
-
-	// Seriailizes the object into an array
-	toArray() {
-		const data = [
-			this.type,
-			this.id
-		]
-
-		if(this.type == DrawingsObject.TYPE.SHAPE) {
-			data.push(this.shapeType)
-		}
-		else if(this.type == DrawingsObject.TYPE.GROUP) {
-			data.push(this.objectIDs)
-		}
-
-		data.push([
-			this.width,
-			this.skewX,
-			this.skewY,
-			this.height,
-			this.x,
-			this.y
-		])
-
-		const propertiesData = []
-		for(const key in ObjectProperties) {
-			const propertyName = ObjectProperties[key]
-			const value = this[propertyName]
-
-			if(value === undefined) continue
-			propertiesData.push(Number(key), value)
-		}
-		data.push(propertiesData)
-
-		return data
-
+		return Serialiser.arrayToObject(data)
 	}
 
 	constructor(type, parameters) {
+		if(type == DrawingsObject.TYPE.SHAPE && !(this instanceof DrawingsShape)) {
+			return new DrawingsShape(parameters)
+		} else if(type == DrawingsObject.TYPE.GROUP && !(this instanceof DrawingsGroup)) {
+			return new DrawingsGroup(parameters)
+		}
+
 		this.type = type
 
 		for(const key in parameters) {
@@ -108,14 +38,26 @@ class DrawingsObject {
 
 		this.x ??= 0
 		this.y ??= 0
-		this.width ??= 1
-		this.height ??= 1
+		this.widthScale ??= 1
+		this.heightScale ??= 1
 		this.skewX ??= 0
 		this.skewY ??= 0
+	}
+
+	setProperties(properties) {
+		for(const key in properties) {
+			this[key] = properties[key]
+		}
+	}
+
+	toArray() {
+		return Serialiser.objectToArray(this)
 	}
 }
 
 class DrawingsShape extends DrawingsObject {
+	static SHAPE_TYPE = createEnum(ShapeTypes)
+
 	constructor(parameters) {
 		super(DrawingsObject.TYPE.SHAPE, parameters)
 
