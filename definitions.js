@@ -1,6 +1,10 @@
 export const ObjectTypes = {
 	2: "Group",
-	3: "Shape"
+	3: "Shape",
+	15: "Text",
+	17: "Formatting",
+	22: "Table",
+	44: "Description"
 }
 
 export const ObjectProperties = {
@@ -16,9 +20,11 @@ export const ObjectProperties = {
 	15: "fillColor",
 	16: "fillOpacity",
 
-	18: "borderPattern",
+	18: "borderEnabled",
 	19: "borderColor",
 	22: "borderThickness",
+
+	43: "borderPattern",
 
 	61: "fillGradientColors",
 
@@ -204,14 +210,6 @@ export const LineEndings = {
 	9: "Hollow diamond"
 }
 
-export const LineStyles = {
-	0: "Single",
-	1: "Double",
-	2: "Triple",
-	3: "Thick-thin",
-	4: "Thin-thick"
-}
-
 export const LinePatterns = {
 	0: "Solid",
 	1: "Dot",
@@ -219,4 +217,12 @@ export const LinePatterns = {
 	3: "Dash dot",
 	4: "Long dash",
 	5: "Long dash dot"
+}
+
+export const LineStyles = {
+	0: "Single",
+	1: "Double",
+	2: "Triple",
+	3: "Thick-thin",
+	4: "Thin-thick"
 }
