@@ -1,19 +1,19 @@
-import { ObjectProperties, LineStyles, LinePatterns } from "./definitions.js"
+import { LineStyles, LinePatterns, TextAlignments } from "./definitions.js"
 import { Path } from "./path.js"
 import * as Color from "./color.js"
 
-export function findKey(object, value) {
-	for(const key in object) {
-		if(object[key] === value) return Number(key)
+export function findKey(definition, value) {
+	for(const key in definition) {
+		if(definition[key] === value) return Number(key)
 	}
 	throw new Error(`Invalid value ${value}`)
 }
 
 // Unpacks properties array into an object
-export function parse(data) {
+export function parse(definition, data) {
 	const properties = {}
 	for(let i = 0; i < data.length; i += 2) {
-		const key = ObjectProperties[data[i]]
+		const key = definition[data[i]]
 		if(!key) continue
 		let value = data[i + 1]
 
@@ -37,16 +37,20 @@ export function parse(data) {
 			value = Color.hexToRgb(value)
 		}
 
+		if(key == "textAlign") {
+			value = TextAlignments[value] || value
+		}
+
 		properties[key] = value
 	}
 	return properties
 }
 
 // Creates an array from properties object
-export function toArray(properties) {
+export function toArray(definition, properties) {
 	const propertiesData = []
-	for(const key in ObjectProperties) {
-		const propertyName = ObjectProperties[key]
+	for(const key in definition) {
+		const propertyName = definition[key]
 		let value = properties[propertyName]
 		if(value === undefined) continue
 
@@ -68,6 +72,10 @@ export function toArray(properties) {
 
 		if(propertyName.endsWith("Color") && Array.isArray(value)) {
 			value = Color.rgbToHex(...value)
+		}
+
+		if(propertyName == "textAlign") {
+			value = findKey(TextAlignments, value)
 		}
 
 		propertiesData.push(Number(key), value)

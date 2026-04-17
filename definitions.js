@@ -7,7 +7,7 @@ export const ObjectTypes = {
 	44: "Description"
 }
 
-export const ObjectProperties = {
+export const ShapeProperties = {
 	0: "shapeModifier0",
 	1: "shapeModifier1",
 
@@ -196,6 +196,24 @@ export const ShapeTypes = {
 	162: "Cloud Callout",
 	164: "Ink stroke",
 }
+
+export const FormattingProperties = {
+	0: "boldEnabled",
+	1: "italicEnabled",
+	2: "underlineEnabled",
+
+	12: "textAlign",
+
+	20: "strikethroughEnabled"
+}
+
+export const TextAlignments = {
+	1: "Left",
+	2: "Center",
+	3: "Right",
+	4: "Justify"
+}
+
 
 export const LineEndings = {
 	0: "None",
