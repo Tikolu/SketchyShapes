@@ -21,6 +21,12 @@ class SketchyObject {
 			this.id = rawData[1]
 		}
 
+		Object.defineProperties(this, {
+			type: {value: this.constructor.objectType || "Object"},
+			attachedObjects: {value: []},
+			attachedTo: {value: null, writable: true}
+		})
+
 		if(parameters) this.setProperties(parameters)
 
 		this.id ||= SketchyObject.generateID()
@@ -39,6 +45,25 @@ class SketchyObject {
 		]
 
 		return data
+	}
+
+	defineSource(tag, source) {
+		if(!this._source) {
+			Object.defineProperty(this, "_source", {
+				value: {},
+				writable: false
+			})
+		}
+
+		this._source[tag] = source
+	}
+
+	attachObject(...object) {
+		this.attachedObjects.push(...object)
+		for(const obj of object) {
+			obj.attachedTo = this
+			obj.id = this.id
+		}
 	}
 }
 
@@ -98,6 +123,10 @@ class SketchyGroup extends SketchyObject {
 		if(rawData) {
 			this.objectIDs = rawData[2]
 		}
+	}
+
+	refreshObjectIDs() {
+		this.objectIDs = this.attachedObjects.map(o => o.id)
 	}
 
 	toArray() {

@@ -1,15 +1,33 @@
+class Point {
+	constructor(x, y) {
+		this.x = x
+		this.y = y
+	}
+
+	toArray() {
+		return [this.x, this.y]
+	}
+}
+
 export class Path {
+	static fromPoints(pointsList) {
+		const points = []
+		for(let i = 0; i < pointsList.length; i += 2) {
+			points.push(new Point(pointsList[i], pointsList[i + 1]))
+		}
+
+		return new Path(points)
+	}
+
 	static fromArray(data) {
 		const pathMetadata = data[2]
 		const pointsList = data[3]
 		const closedPath = pathMetadata[4] == 5
 
-		const points = []
-		for(let i = 0; i < pointsList.length; i += 2) {
-			points.push({x: pointsList[i], y: pointsList[i + 1]})
-		}
+		const newPath = Path.fromPoints(pointsList)
+		newPath.closed = closedPath
 		
-		return new Path(points, closedPath)
+		return newPath
 	}
 	
 	constructor(points, closed=false) {
@@ -23,12 +41,17 @@ export class Path {
 
 	toArray() {
 		const metaLength = (this.length - 1) * 2
-		const pathMetadata = [0, 2, 1, metaLength]
+		const pathMetadata = [
+			0,
+			2,
+			this.pathType ?? 1,
+			metaLength
+		]
 		if(this.closed) pathMetadata.push(5, 0)
 
 		const pointsList = []
 		for(const point of this.points) {
-			pointsList.push(point.x, point.y)
+			pointsList.push(...point.toArray())
 		}
 
 		return [
