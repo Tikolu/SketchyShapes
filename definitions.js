@@ -29,6 +29,8 @@ export const ShapeProperties = {
 
 	43: "borderPattern",
 
+	53: "textPadding",
+
 	61: "fillGradientColors",
 
 	126: "reflectionEnabled",

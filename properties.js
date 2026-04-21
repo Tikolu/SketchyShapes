@@ -10,6 +10,14 @@ export function findKey(definition, value) {
 }
 
 const propertyProcessors = {
+	width: [
+		v => v,
+		v => Math.round(v)
+	],
+	height: [
+		v => v,
+		v => Math.round(v)
+	],
 	paths: [
 		v => v.map(Path.fromArray),
 		v => v.map(path => path.toArray())
@@ -29,6 +37,19 @@ const propertyProcessors = {
 	lineJoin: [
 		v => LineJoins[v] || 0,
 		v => findKey(LineJoins, v)
+	],
+	textPadding: [
+		v => ({
+			top: v[0],
+			right: v[1],
+			bottom: v[2],
+			left: v[3]
+		}),
+		v => {
+			if(Array.isArray(v)) return v
+			else if(typeof v == "number") return [v, v, v, v]
+			else return [v.top, v.right, v.bottom, v.left]
+		}
 	]
 }
 

@@ -4,26 +4,26 @@ import { Path } from "./path.js"
 
 const SCALE = 1000
 const RELATIVE_SCALE = 315
-const FONT_SCALE = 2
+const FONT_SCALE = 1.95
 
 function parsePx(value) {
 	return Number(value.replace("px", ""))
 }
 
 function createShape(element, styles) {
+	const rect = element.getBBox()
+
 	// Create shape
 	const shape = new SketchyShape({
-		x: (SCALE * element.getAttribute("x")) || 0,
-		y: (SCALE * element.getAttribute("y")) || 0
+		x: (SCALE * rect.x) || 0,
+		y: (SCALE * rect.y) || 0
 	})
 
 	shape.defineSource("svgElement", element)
 
 	// Width and height
-	const width = SCALE * parsePx(styles.width)
-	const height = SCALE * parsePx(styles.height)
-	if(width) shape.width = width
-	if(height) shape.height = height
+	if(rect.width) shape.width = rect.width * SCALE
+	if(rect.height) shape.height = rect.height * SCALE
 
 	// Fill color
 	if(styles.fill && styles.fill != "none") {
@@ -170,22 +170,23 @@ const converters = {
 			content: element.textContent
 		})
 
-		let fontWeight = Number(styles.fontWeight) || 400
-		if(fontWeight == "normal") fontWeight = 400
-		else if(fontWeight == "bold") fontWeight = 700
-
 		const formatting = new SketchyFormatting({
 			range: [0, element.textContent.length],
 
-			boldEnabled: fontWeight > 400,
-			italicEnabled: styles.fontStyle == "italic",
-			underlineEnabled: styles.textDecoration.includes("underline"),
-			strikethroughEnabled: styles.textDecoration.includes("line-through"),
-
 			fontColor: new Color(styles.fill),
-
 			fontSize: parsePx(styles.fontSize) * FONT_SCALE
 		})
+
+		// Bold
+		let fontWeight = Number(styles.fontWeight) || 400
+		if(fontWeight == "normal") fontWeight = 400
+		else if(fontWeight == "bold") fontWeight = 700
+		if(fontWeight > 400) formatting.boldEnabled = true
+
+		// Italic, underline, strikethrough
+		if(styles.fontStyle == "italic") formatting.italicEnabled = true
+		if(styles.textDecoration.includes("underline")) formatting.underlineEnabled = true
+		if(styles.textDecoration.includes("line-through")) formatting.strikethroughEnabled = true
 
 		// Font family
 		if(styles.fontFamily) {
@@ -206,6 +207,14 @@ const converters = {
 			else if(align == "end") align = "right"
 
 			formatting.textAlignment = align
+		}
+
+		// Padding
+		shape.textPadding = {
+			top: parsePx(styles.paddingTop || 0),
+			right: parsePx(styles.paddingRight || 0),
+			bottom: parsePx(styles.paddingBottom || 0),
+			left: parsePx(styles.paddingLeft || 0)
 		}
 
 		shape.attachObject(text, formatting)

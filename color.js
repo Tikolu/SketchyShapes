@@ -41,7 +41,7 @@ export class Color {
 		this.g = g
 		this.b = b
 
-		if(a != 1) this.a = a
+		if(a != 1 && a !== undefined) this.a = a
 
 		Object.defineProperty(this, "alpha", {
 			get() {
