@@ -1,0 +1,10 @@
+# SketchyShapes
+A library for parsing and generating Google Drawings / Google Slides objects.
+
+## Project state
+This project is in very early development, missing features include:
+- Complex paths: curves and arcs
+- Most shape properties: rotation, shadows, reflection, text formatting etc.
+- SVG to shapes: currently only supports basic shapes, needs support for `path` and `g` elements
+- Shapes to SVG or other formats
+- Broken bounding box of path shapes (polylines etc.)
