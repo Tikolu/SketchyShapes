@@ -7,9 +7,16 @@ export function clipboardDataToObjects(str, raw=false) {
 
 	if(raw) {
 		return json.resolved
-	} else {
-		return json.resolved.map(o => new SketchyObject(null, o))
 	}
+
+	const objects = []
+	for(const objectData of json.resolved) {
+		const object = new SketchyObject(null, objectData)
+		object.defineSource("clipboardData", objectData)
+		objects.push(object)
+	}
+
+	return objects
 }
 
 // Converts an array of SketchyObjects to a google-docs-drawings-object string

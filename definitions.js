@@ -1,4 +1,5 @@
 export const ObjectTypes = {
+	0: "Object",
 	2: "Group",
 	3: "Shape",
 	15: "Text",
@@ -11,8 +12,8 @@ export const ShapeProperties = {
 	0: "shapeModifier0",
 	1: "shapeModifier1",
 
-	8: "height",
-	9: "width",
+	8: "width",
+	9: "height",
 
 	12: "paths",
 
@@ -22,7 +23,9 @@ export const ShapeProperties = {
 
 	18: "borderEnabled",
 	19: "borderColor",
-	22: "borderThickness",
+	22: "borderWidth",
+
+	23: "lineJoin",
 
 	43: "borderPattern",
 
@@ -202,18 +205,23 @@ export const FormattingProperties = {
 	1: "italicEnabled",
 	2: "underlineEnabled",
 
+	4: "fontColor",
+	5: "fontFamily",
+	6: "fontSize",
+
 	12: "textAlign",
+	13: "marginLeft",
+	14: "marginRight",
 
 	20: "strikethroughEnabled"
 }
 
 export const TextAlignments = {
-	1: "Left",
-	2: "Center",
-	3: "Right",
-	4: "Justify"
+	1: "left",
+	2: "center",
+	3: "right",
+	4: "justify"
 }
-
 
 export const LineEndings = {
 	0: "None",
@@ -243,4 +251,10 @@ export const LineStyles = {
 	2: "Triple",
 	3: "Thick-thin",
 	4: "Thin-thick"
+}
+
+export const LineJoins = {
+	0: "miter",
+	1: "round",
+	2: "bevel"
 }

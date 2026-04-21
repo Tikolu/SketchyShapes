@@ -18,11 +18,6 @@ class SketchyObject {
 				}
 			}
 
-			Object.defineProperty(this, "type", {
-				value: objectType,
-				enumerable: true
-			})
-
 			this.id = rawData[1]
 		}
 
@@ -71,13 +66,6 @@ class SketchyShape extends SketchyObject {
 		}
 
 		this.shapeType ??= "Customised"
-
-		this.x ??= 0
-		this.y ??= 0
-		this.widthScale ??= 1
-		this.heightScale ??= 1
-		this.skewX ??= 0
-		this.skewY ??= 0
 	}
 
 	toArray() {
@@ -86,12 +74,12 @@ class SketchyShape extends SketchyObject {
 		data.push(
 			Properties.findKey(ShapeTypes, this.shapeType),
 			[
-				this.widthScale,
-				this.skewX,
-				this.skewY,
-				this.heightScale,
-				this.x,
-				this.y
+				this.widthScale ?? 1,
+				this.skewX ?? 0,
+				this.skewY ?? 0,
+				this.heightScale ?? 1,
+				this.x ?? 0,
+				this.y ?? 0
 			],
 			Properties.toArray(ShapeProperties, this)
 		)
@@ -178,6 +166,8 @@ class SketchyFormatting extends SketchyObject {
 
 			this.setProperties(Properties.parse(FormattingProperties, rawData[6]))
 		}
+
+		this.range ||= [0, 0]
 	}
 
 	toArray() {
