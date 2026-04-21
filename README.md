@@ -10,7 +10,7 @@ This project is in very early development, missing features include:
 - Broken bounding box of path shapes (polylines etc.)
 
 ## Demo
-A demo page is available here: https://tikolu.github.io/SketchyShapes
+A demo page is available here: https://tikolu.github.io/SketchyShapes/demo
 
 ---
 
