@@ -1,0 +1,178 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>SketchyShapes Demo</title>
+		<style>
+			body {
+				font-family: sans-serif;
+			}
+
+			section {
+				background-color: #eee;
+				padding: 1em;
+				margin-bottom: 1em;
+				border-radius: 0.5em;
+			}
+
+			h2 {
+				margin-top: 0;
+			}
+
+			#editor {
+				height: 20em;
+				resize: vertical;
+			}
+
+			textarea {
+				width: 100%;
+				margin-bottom: 0.5em;
+				font-family: monospace;
+			}
+
+			#paste-textarea {
+				height: 4em;
+				resize: none;
+				background-color: transparent;
+				border-style: dashed;
+
+				&::selection {
+					background-color: #e8e8e8;
+				}
+			}
+
+			svg {
+				background: repeating-conic-gradient(#e8e8e8 0 25%, transparent 0 50%) 50% / 20px 20px;
+				max-width: 50%;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>SketchyShapes Demo</h1>
+		<p>
+			<a href="https://drawing.new" target="_blank">Google Drawings</a>
+			&nbsp;
+			<a href="https://slides.new" target="_blank">Google Slides</a>
+		</p>
+		<p>Use this demo page to convert between Google Drawings/Slides shape objects, JSON, and SVG. Open JavaScript console to see output and interact with shape objects.</p>
+
+		<section>
+			<h2>Import / export shapes</h2>
+			<textarea id="paste-textarea">Paste objects here to import...&#10;Copy from here to export objects...</textarea>
+		</section>
+
+		<section>
+			<h2>JSON editor</h2>
+			<textarea id="editor">[]</textarea>
+		</section>
+
+		<section>
+			<h2>SVG conversion</h2>
+			<input type="file" id="svg-file-input" accept=".svg">
+			<hr>
+
+			<svg width="200" height="250" version="1.1" xmlns="http://www.w3.org/2000/svg">
+				<rect x="10" y="10" width="30" height="30" stroke="gray" fill="gray" stroke-width="5"></rect>
+				<rect x="60" y="10" rx="10" ry="10" width="30" height="30" stroke="black" fill="transparent" stroke-width="5"></rect>
+
+				<circle cx="25" cy="75" r="20" stroke="red" fill="transparent" stroke-width="6"></circle>
+				<ellipse cx="75" cy="75" rx="20" ry="5" stroke="blue" fill="lightblue" stroke-width="3"></ellipse>
+
+				<line x1="10" x2="50" y1="110" y2="150" stroke="purple" stroke-width="5"></line>
+				<polyline points="60 110 65 120 70 115 75 130 80 125 85 140 90 135 95 150 100 145" stroke="orange" fill="transparent" stroke-width="5"></polyline>
+
+				<polygon points="50 165 55 180 70 180 60 190 65 205 50 195 35 205 40 190 30 180 45 180" stroke="green" fill="yellow" stroke-width="5"></polygon>
+
+				<path d="M20,230 Q40,205 50,230 T90,230" fill="none" stroke="blue" stroke-width="5"></path>
+			</svg>
+		</section>
+
+		<script type="module">
+			import { SketchyObject } from "/object.js"
+			import * as Serialiser from "/serialiser.js"
+			import { SVGToObjects } from "/svg.js"
+
+			const textarea = document.querySelector("#editor")
+
+			const pasteArea = document.getElementById("paste-textarea")
+			pasteArea.onclick = () => pasteArea.select()
+			pasteArea.oncontextmenu = () => pasteArea.select()
+			pasteArea.oninput = () => pasteArea.value = pasteArea.textContent
+
+			pasteArea.onpaste = event => {
+				event.preventDefault()
+				const items = event.clipboardData.items
+
+				console.group("Importing from clipboard...")
+
+				let found = false
+				for(const item of items) {
+					if(item.type != "application/x-vnd.google-docs-drawings-object+wrapped") continue
+					found = true
+
+					item.getAsString(str => {
+						const objects = Serialiser.clipboardDataToObjects(str)
+						textarea.value = JSON.stringify(objects.map(o => o._source.clipboardData), null, 2)
+						for(const obj of objects) {
+							console.log(obj)
+							window.temp1 = obj
+						}
+					})
+				}
+
+				if(!found) console.warn("No shape objects found")
+				console.groupEnd()
+			}
+
+			pasteArea.oncopy = pasteArea.oncut = event => {
+				event.preventDefault()
+				console.group("Exporting to clipboard...")
+
+				const rawObjects = JSON.parse(textarea.value || "[]")
+				const data = Serialiser.objectsToClipboardData(rawObjects, true)
+				event.clipboardData.setData("application/x-vnd.google-docs-drawings-object+wrapped", data)
+
+				if(rawObjects.length > 0) console.log(`Exported ${rawObjects.length} objects`)
+				else console.warn("No shape objects to export")
+
+				console.groupEnd()
+			}
+
+			window.packObjects = (...objects) => {
+				objects.forEach(o => console.log(o))
+
+				const data = objects.map(o => o.toArray())
+				textarea.value = JSON.stringify(data, null, 2)
+
+				return data
+			}
+
+			window.SketchyObject = SketchyObject
+
+			let svg = document.querySelector("svg")
+			const input = document.getElementById("svg-file-input")
+
+			function convertSVG() {
+				console.group("Converting SVG to objects...")
+
+				window.packObjects(...SVGToObjects(svg))
+
+				console.groupEnd()
+			}
+
+			if(svg?.childElementCount) convertSVG()
+
+			input.onchange = () => {
+				const file = input.files[0]
+				if(!file) return
+
+				const reader = new FileReader()
+				reader.onload = event => {
+					svg.outerHTML = event.target.result
+					svg = document.querySelector("svg")
+					convertSVG()
+				}
+				reader.readAsText(file)
+			}
+		</script>
+	</body>
+</html>

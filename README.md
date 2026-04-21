@@ -1,5 +1,5 @@
 # SketchyShapes
-A library for parsing and generating Google Drawings / Google Slides objects.
+A library for parsing and generating [Google Drawings](https://drawing.new) / [Google Slides](https://slides.new) objects.
 
 ## Project state
 This project is in very early development, missing features include:
@@ -8,3 +8,10 @@ This project is in very early development, missing features include:
 - SVG to shapes: currently only supports basic shapes, needs support for `path` and `g` elements
 - Shapes to SVG or other formats
 - Broken bounding box of path shapes (polylines etc.)
+
+## Demo
+A demo page is available here: https://tikolu.github.io/SketchyShapes
+
+---
+
+<sup>Tikolu and SketchyShapes are neither endorsed nor affiliated with Google in any way.</sup>
