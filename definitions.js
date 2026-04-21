@@ -27,6 +27,8 @@ export const ShapeProperties = {
 
 	23: "lineJoin",
 
+	33: "textContent",
+
 	43: "borderPattern",
 
 	53: "textPadding",

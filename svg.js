@@ -165,10 +165,7 @@ const converters = {
 		const shape = createShape(element, styles)
 
 		shape.shapeType = "Text Box"
-
-		const text = new SketchyText({
-			content: element.textContent
-		})
+		shape.textContent = element.textContent
 
 		const formatting = new SketchyFormatting({
 			range: [0, element.textContent.length],
@@ -217,9 +214,8 @@ const converters = {
 			left: parsePx(styles.paddingLeft || 0)
 		}
 
-		shape.attachObject(text, formatting)
-
-		return [shape, text, formatting]
+		shape.attachObject(formatting)
+		return [shape, formatting]
 	}
 }
 
