@@ -55,6 +55,7 @@ function createShape(element, styles) {
 		shape.paths = [
 			Path.fromPoints(points.map(p => Number(p) * SCALE))
 		]
+		shape.updateBoundsFromPaths()
 	}
 
 	return shape

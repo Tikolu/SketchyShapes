@@ -29,6 +29,28 @@ export class Path {
 		
 		return newPath
 	}
+
+	static combinedBounds(...paths) {
+		let	minX = Infinity,
+			minY = Infinity,
+			maxX = -Infinity,
+			maxY = -Infinity
+
+		for(const path of paths) {
+			const bounds = path.calculateBounds()
+			if(bounds.x < minX) minX = bounds.x
+			if(bounds.y < minY) minY = bounds.y
+			if(bounds.x + bounds.width > maxX) maxX = bounds.x + bounds.width
+			if(bounds.y + bounds.height > maxY) maxY = bounds.y + bounds.height
+		}
+
+		return {
+			x: minX,
+			y: minY,
+			width: maxX - minX,
+			height: maxY - minY
+		}
+	}
 	
 	constructor(points, closed=false) {
 		this.points = points
@@ -37,6 +59,34 @@ export class Path {
 
 	get length() {
 		return this.points.length
+	}
+
+	moveBy(dx, dy) {
+		for(const point of this.points) {
+			point.x += dx
+			point.y += dy
+		}
+	}
+
+	calculateBounds() {
+		let	minX = Infinity,
+			minY = Infinity,
+			maxX = -Infinity,
+			maxY = -Infinity
+
+		for(const point of this.points) {
+			if(point.x < minX) minX = point.x
+			if(point.y < minY) minY = point.y
+			if(point.x > maxX) maxX = point.x
+			if(point.y > maxY) maxY = point.y
+		}
+
+		return {
+			x: minX,
+			y: minY,
+			width: maxX - minX,
+			height: maxY - minY
+		}
 	}
 
 	toArray() {

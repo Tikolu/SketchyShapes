@@ -93,6 +93,25 @@ class SketchyShape extends SketchyObject {
 		this.shapeType ??= "Customised"
 	}
 
+	updateBoundsFromPaths() {
+		if(!this.paths || this.paths.length == 0) return
+
+		const bounds = Path.combinedBounds(...this.paths)
+
+		for(const path of this.paths) {
+			path.moveBy(-bounds.x, -bounds.y)
+		}
+
+		this.setProperties({
+			x: bounds.x,
+			y: bounds.y,
+			width: bounds.width,
+			height: bounds.height,
+			widthScale: 1,
+			heightScale: 1
+		})
+	}
+
 	toArray() {
 		const data = super.toArray()
 

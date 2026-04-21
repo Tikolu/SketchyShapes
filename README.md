@@ -7,7 +7,6 @@ This project is in very early development, missing features include:
 - Most shape properties: rotation, shadows, reflection, text formatting etc.
 - SVG to shapes: currently only supports basic shapes, needs support for `path` and `g` elements
 - Shapes to SVG or other formats
-- Broken bounding box of path shapes (polylines etc.)
 
 ## Demo
 A demo page is available here: https://tikolu.github.io/SketchyShapes/demo
