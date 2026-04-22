@@ -3,10 +3,9 @@ A library for parsing and generating [Google Drawings](https://drawing.new) / [G
 
 ## Project state
 This project is in very early development, missing features include:
-- Complex paths: curves and arcs
-- Most shape properties: rotation, shadows, reflection, text formatting etc.
-- SVG to shapes: currently only supports basic shapes, needs support for `path` and `g` elements
-- Shapes to SVG or other formats
+- Complex paths: curves and arcs, support for SVG `path` elements
+- Most shape properties: rotation, shadows, reflections, text formatting etc.
+- Converting from shapes to SVG
 
 ## Demo
 A demo page is available here: https://tikolu.github.io/SketchyShapes/demo

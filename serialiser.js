@@ -16,6 +16,19 @@ export function clipboardDataToObjects(str, raw=false) {
 		objects.push(object)
 	}
 
+	// Resolve groups
+	for(const group of objects.filter(o => o.type == "Group")) {
+		const objectIDs = group.objectIDs || []
+		for(const objectID of objectIDs) {
+			const object = objects.find(o => o.id == objectID)
+			if(object) {
+				group.attachObject(object)
+			} else {
+				console.warn(`Object with ID ${objectID} not found for group ${group.id}`)
+			}
+		}
+	}
+
 	return objects
 }
 

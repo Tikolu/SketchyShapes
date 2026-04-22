@@ -144,13 +144,26 @@ class SketchyGroup extends SketchyObject {
 		}
 	}
 
-	refreshObjectIDs() {
-		this.objectIDs = this.attachedObjects.map(o => o.id)
+	attachObject(...object) {
+		this.attachedObjects.push(...object)
+		for(const obj of object) {
+			obj.attachedTo = this
+		}
 	}
 
 	toArray() {
 		const data = super.toArray()
-		data.push(this.objectIDs)
+
+		if(!this.objectIDs) this.objectIDs = []
+		for(const object of this.attachedObjects) {
+			if(this.objectIDs.includes(object.id)) continue
+			this.objectIDs.push(object.id)
+		}
+
+		data.push(
+			this.objectIDs,
+			[1, 0, 0, 1, 0, 0]
+		)
 
 		return data
 	}

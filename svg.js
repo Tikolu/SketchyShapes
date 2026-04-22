@@ -1,4 +1,4 @@
-import { SketchyShape, SketchyText, SketchyFormatting } from "./object.js"
+import { SketchyShape, SketchyText, SketchyFormatting, SketchyGroup } from "./object.js"
 import { Color } from "./color.js"
 import { Path } from "./path.js"
 
@@ -216,7 +216,17 @@ const converters = {
 
 		shape.attachObject(formatting)
 		return [shape, formatting]
+	},
+
+	g(element, styles) {
+		const group = new SketchyGroup()
+
+		const objects = SVGToObjects(element)
+		group.attachObject(...objects)
+
+		return [...objects, group]
 	}
+
 }
 
 export function SVGToObjects(svg) {
