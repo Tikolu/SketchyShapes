@@ -2,9 +2,8 @@ import { SketchyShape, SketchyText, SketchyFormatting, SketchyGroup } from "./ob
 import { Color } from "./color.js"
 import { Path, MoveCommand, LineCommand, CubicCommand, CloseCommand } from "./path.js"
 
-const SCALE = 1000
-const RELATIVE_SCALE = 315
-const FONT_SCALE = 1.95
+const SCALE = 381
+const FONT_SCALE = 0.743
 
 function parsePx(value) {
 	return Number(value.replace("px", ""))
