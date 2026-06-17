@@ -18,7 +18,7 @@ class Command {
 		}
 	}
 
-	constructor(points, type) {
+	constructor(points=[], type) {
 		if(type) {
 			const commandClass = Command.findClass(type)
 			if(commandClass) return new commandClass(...points)
@@ -126,10 +126,6 @@ class ArcCommand extends Command {
 class CloseCommand extends Command {
 	static commandType = "Close"
 	static pointCount = 0
-
-	constructor() {
-		super([])
-	}
 }
 
 const classes = [MoveCommand, LineCommand, QuadCommand, CubicCommand, ArcCommand, CloseCommand]
@@ -192,7 +188,7 @@ export class Path {
 		const commandClass = Command.findClass(commandType) || Command
 		const pointCount = commandClass.pointCount ?? 2
 
-		if(points.length % pointCount != 0) {
+		if(pointCount && points.length % pointCount != 0) {
 			throw new PathError(`Invalid number of points for ${commandType} command: expected multiple of ${pointCount}, got ${points.length}`)
 		}
 
