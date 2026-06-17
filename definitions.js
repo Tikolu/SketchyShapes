@@ -262,3 +262,12 @@ export const LineJoins = {
 	1: "round",
 	2: "bevel"
 }
+
+export const PathCommands = {
+	0: "Move",
+	1: "Line",
+	2: "Quad",
+	3: "Cubic",
+	4: "Arc",
+	5: "Close"
+}

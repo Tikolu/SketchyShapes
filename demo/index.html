@@ -91,6 +91,9 @@
 			import * as Serialiser from "../serialiser.js"
 			import { SVGToObjects } from "../svg.js"
 
+			// SVGPathElement.getPathData() polyfill for Chrome
+			import "https://cdn.jsdelivr.net/npm/path-data-polyfill"
+
 			const textarea = document.querySelector("#editor")
 
 			const pasteArea = document.getElementById("paste-textarea")

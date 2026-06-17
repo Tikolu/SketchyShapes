@@ -2,8 +2,7 @@
 A library for parsing and generating [Google Drawings](https://drawing.new) / [Google Slides](https://slides.new) objects.
 
 ## Project state
-This project is in very early development, missing features include:
-- Complex paths: curves and arcs, support for SVG `path` elements
+This project is in early development, missing features include:
 - Most shape properties: rotation, shadows, reflections, text formatting etc.
 - Converting from shapes to SVG
 

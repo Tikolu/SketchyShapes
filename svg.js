@@ -1,6 +1,6 @@
 import { SketchyShape, SketchyText, SketchyFormatting, SketchyGroup } from "./object.js"
 import { Color } from "./color.js"
-import { Path } from "./path.js"
+import { Path, MoveCommand, LineCommand, CubicCommand, CloseCommand } from "./path.js"
 
 const SCALE = 1000
 const RELATIVE_SCALE = 315
@@ -52,9 +52,15 @@ function createShape(element, styles) {
 	// Points
 	if(element.hasAttribute("points")) {
 		const points = element.getAttribute("points").trim().split(/[\s,]+/)
-		shape.paths = [
-			Path.fromPoints(points.map(p => Number(p) * SCALE))
-		]
+		const path = new Path([
+			new MoveCommand(points[0] * SCALE, points[1] * SCALE)
+		])
+		for(let i = 2; i < points.length; i += 2) {
+			path.commands.push(
+				new LineCommand(points[i] * SCALE, points[i + 1] * SCALE)
+			)
+		}
+		shape.paths = [path]
 		shape.updateBoundsFromPaths()
 	}
 
@@ -151,11 +157,43 @@ const converters = {
 	polygon(element, styles) {
 		const shape = createShape(element, styles)
 
-		shape.shapeType = "Polyline"
-		shape.paths[0].closed = true
+		shape.shapeType = "Polygon"
 
-		if(shape.fillColor) {
-			shape.fillEnabled = true
+		shape.fillEnabled = !!shape.fillColor
+
+		// Add close command to path
+		shape.paths[0]?.commands.push(new CloseCommand())
+
+		return shape
+	},
+
+	path(element, styles) {
+		const shape = createShape(element, styles)
+
+		shape.shapeType = "Customised"
+
+		shape.fillEnabled = !!shape.fillColor
+
+		const d = element.getAttribute("d")
+		if(d) {
+			const path = new Path()
+
+			for(const command of element.getPathData({normalize: true})) {
+				let newCommand
+				if(command.type == "M") newCommand = MoveCommand
+				else if(command.type == "L") newCommand = LineCommand
+				else if(command.type == "C") newCommand = CubicCommand
+				else if(command.type == "Z") newCommand = CloseCommand
+				else {
+					throw new Error(`Unsupported path command ${command.type}`)
+				}
+
+				path.commands.push(new newCommand(...command.values.map(p => p * SCALE)))
+			}
+
+			shape.paths ||= []
+			shape.paths.push(path)
+			shape.updateBoundsFromPaths()
 		}
 
 		return shape
