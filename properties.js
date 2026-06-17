@@ -10,18 +10,15 @@ export function findKey(definition, value) {
 }
 
 const propertyProcessors = {
-	width: [
-		v => v,
-		v => Math.round(v)
-	],
-	height: [
-		v => v,
-		v => Math.round(v)
-	],
+	shapeModifier0: v => Math.round(v),
+	shapeModifier1: v => Math.round(v),
+	width: v => Math.round(v),
+	height: v => Math.round(v),
 	paths: [
 		v => v.map(Path.fromArray),
 		v => v.map(path => path.toArray())
 	],
+	borderWidth: v => Math.round(v),
 	borderPattern: [
 		v => LinePatterns[v] || 0,
 		v => findKey(LinePatterns, v)
@@ -75,7 +72,8 @@ export function parse(definition, data) {
 		}
 
 		if(propertyProcessors[key]) {
-			value = propertyProcessors[key][0](value)
+			const processor = propertyProcessors[key][0] || propertyProcessors[key]
+			value = processor(value)
 		}
 
 		properties[key] = value
@@ -101,7 +99,10 @@ export function toArray(definition, properties) {
 		}
 
 		if(propertyProcessors[propertyName]) {
-			value = propertyProcessors[propertyName][1](value)
+			const processor = propertyProcessors[propertyName][1] ||
+							  propertyProcessors[propertyName][0] ||
+							  propertyProcessors[propertyName]
+			value = processor(value)
 		}
 
 		propertiesData.push(Number(key), value)

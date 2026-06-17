@@ -122,8 +122,8 @@ class SketchyShape extends SketchyObject {
 				this.skewX ?? 0,
 				this.skewY ?? 0,
 				this.heightScale ?? 1,
-				this.x ?? 0,
-				this.y ?? 0
+				Math.round(this.x ?? 0),
+				Math.round(this.y ?? 0)
 			],
 			Properties.toArray(ShapeProperties, this)
 		)
