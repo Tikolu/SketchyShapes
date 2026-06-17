@@ -45,6 +45,11 @@ function createShape(element, styles) {
 		shape.borderWidth = SCALE * strokeWidth
 	}
 	shape.borderColor = new Color(styles.stroke)
+	if(shape.borderColor.alpha == 0) {
+		delete shape.borderColor
+		delete shape.borderWidth
+		shape.borderEnabled = false
+	}
 
 	// Line join
 	shape.lineJoin = styles["stroke-linejoin"] || "miter"

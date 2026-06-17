@@ -25,12 +25,12 @@ function parseColor(colorData) {
 	}
 
 	else if(colorData == "none" || colorData == "transparent") {
-		return [0, 0, 0]
+		return [0, 0, 0, 0]
 	}
 
 	else {
 		console.error("Unknown color format", colorData)
-		return [0, 0, 0]
+		return [0, 0, 0, 0]
 	}
 }
 
