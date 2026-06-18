@@ -95,7 +95,7 @@ const converters = {
 			shape.shapeType = "Rectangle"
 		}
 
-		return shape
+		return [shape]
 	},
 
 	circle(element, styles) {
@@ -112,7 +112,7 @@ const converters = {
 		shape.width = r * 2
 		shape.height = r * 2
 
-		return shape
+		return [shape]
 	},
 
 	ellipse(element, styles) {
@@ -130,7 +130,7 @@ const converters = {
 		shape.width = rx * 2
 		shape.height = ry * 2
 
-		return shape
+		return [shape]
 	},
 
 	line(element, styles) {
@@ -148,7 +148,7 @@ const converters = {
 		shape.width = x2 - x1
 		shape.height = y2 - y1
 
-		return shape
+		return [shape]
 	},
 
 	polyline(element, styles) {
@@ -156,7 +156,7 @@ const converters = {
 
 		shape.shapeType = "Polyline"
 
-		return shape
+		return [shape]
 	},
 
 	polygon(element, styles) {
@@ -167,7 +167,7 @@ const converters = {
 		// Add close command to path
 		shape.paths[0]?.commands.push(new CloseCommand())
 
-		return shape
+		return [shape]
 	},
 
 	path(element, styles) {
@@ -197,7 +197,7 @@ const converters = {
 			shape.updateBoundsFromPaths()
 		}
 
-		return shape
+		return [shape]
 	},
 
 	text(element, styles) {
@@ -280,9 +280,11 @@ export function SVGToObjects(svg) {
 
 		// Call converter
 		const styles = window.getComputedStyle(element)
-		let shape = converter(element, styles)
-		if(!Array.isArray(shape)) shape = [shape]
-		objects.push(...shape)
+		const shapes = converter(element, styles)
+
+		for(const shape of shapes) {
+			objects.push(shape)
+		}
 	}
 
 	return objects
