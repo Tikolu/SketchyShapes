@@ -33,6 +33,7 @@ function createShape(element, styles) {
 		}
 		shape.fillColor = color
 	}
+	if(!shape.fillColor) shape.fillEnabled = false
 
 	// Opacity
 	const opacity = Number(styles.opacity || 1)
@@ -163,8 +164,6 @@ const converters = {
 
 		shape.shapeType = "Polygon"
 
-		shape.fillEnabled = !!shape.fillColor
-
 		// Add close command to path
 		shape.paths[0]?.commands.push(new CloseCommand())
 
@@ -175,8 +174,6 @@ const converters = {
 		const shape = createShape(element, styles)
 
 		shape.shapeType = "Customised"
-
-		shape.fillEnabled = !!shape.fillColor
 
 		const d = element.getAttribute("d")
 		if(d) {
