@@ -72,6 +72,27 @@ function createShape(element, styles) {
 	return shape
 }
 
+function processPathData(element, shape) {
+	const path = new Path()
+
+	for(const command of element.getPathData({normalize: true})) {
+		let newCommand
+		if(command.type == "M") newCommand = MoveCommand
+		else if(command.type == "L") newCommand = LineCommand
+		else if(command.type == "C") newCommand = CubicCommand
+		else if(command.type == "Z") newCommand = CloseCommand
+		else {
+			throw new Error(`Unsupported path command ${command.type}`)
+		}
+
+		path.commands.push(new newCommand(...command.values.map(p => p * SCALE)))
+	}
+	path.moveBy(-shape.x, -shape.y)
+
+	shape.paths ||= []
+	shape.paths.push(path)
+}
+
 const converters = {
 	rect(element, styles) {
 		const shape = createShape(element, styles)
@@ -82,15 +103,7 @@ const converters = {
 
 		if(rx || ry) {
 			shape.shapeType = "Rounded Rectangle"
-
-			if(rx === null) rx = ry
-			if(ry === null) ry = rx
-
-			rx *= SCALE
-			ry *= SCALE
-
-			shape.shapeModifier0 = (rx + ry) * 1.45
-
+			processPathData(element, shape)
 		} else {
 			shape.shapeType = "Rectangle"
 		}
@@ -175,26 +188,8 @@ const converters = {
 
 		shape.shapeType = "Customised"
 
-		const d = element.getAttribute("d")
-		if(d) {
-			const path = new Path()
-
-			for(const command of element.getPathData({normalize: true})) {
-				let newCommand
-				if(command.type == "M") newCommand = MoveCommand
-				else if(command.type == "L") newCommand = LineCommand
-				else if(command.type == "C") newCommand = CubicCommand
-				else if(command.type == "Z") newCommand = CloseCommand
-				else {
-					throw new Error(`Unsupported path command ${command.type}`)
-				}
-
-				path.commands.push(new newCommand(...command.values.map(p => p * SCALE)))
-			}
-
-			shape.paths ||= []
-			shape.paths.push(path)
-			shape.updateBoundsFromPaths()
+		if(element.hasAttribute("d")) {
+			processPathData(element, shape)
 		}
 
 		return [shape]
