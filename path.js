@@ -41,7 +41,7 @@ class Command {
 	}
 
 	toArray() {
-		return this.points
+		return this.points.map(p => Math.round(p))
 	}
 
 	get typeCode() {

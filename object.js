@@ -2,6 +2,11 @@ import { ObjectTypes, ShapeTypes, ShapeProperties, FormattingProperties } from "
 import { Path } from "./path.js"
 import * as Properties from "./properties.js"
 
+function decimalRound(value, p=4) {
+	const f = Math.pow(10, p)
+	return Math.round((value + Number.EPSILON) * f) / f
+}
+
 class SketchyObject {
 	static generateID() {
 		return `ga${Math.random().toString(16).slice(6)}`
@@ -118,10 +123,10 @@ class SketchyShape extends SketchyObject {
 		data.push(
 			Properties.findKey(ShapeTypes, this.shapeType),
 			[
-				this.widthScale ?? 1,
-				this.skewX ?? 0,
-				this.skewY ?? 0,
-				this.heightScale ?? 1,
+				decimalRound(this.widthScale ?? 1),
+				decimalRound(this.skewX ?? 0),
+				decimalRound(this.skewY ?? 0),
+				decimalRound(this.heightScale ?? 1),
 				Math.round(this.x ?? 0),
 				Math.round(this.y ?? 0)
 			],

@@ -27,6 +27,7 @@ function createShape(element, styles) {
 	// Fill color
 	if(styles.fill && styles.fill != "none") {
 		const color = new Color(styles.fill)
+		if(styles.fillOpacity != color.alpha) color.alpha = Number(styles.fillOpacity)
 		if(color.alpha !== 1) {
 			shape.fillOpacity = color.alpha
 			color.alpha = 1
@@ -199,7 +200,10 @@ const converters = {
 		const shape = createShape(element, styles)
 
 		shape.shapeType = "Text Box"
-		shape.textContent = element.textContent
+
+		const text = new SketchyText({
+			content: element.textContent
+		})
 
 		const formatting = new SketchyFormatting({
 			range: [0, element.textContent.length],
@@ -248,8 +252,8 @@ const converters = {
 			left: parsePx(styles.paddingLeft || 0)
 		}
 
-		shape.attachObject(formatting)
-		return [shape, formatting]
+		shape.attachObject(text, formatting)
+		return [shape, text, formatting]
 	},
 
 	g(element, styles) {
