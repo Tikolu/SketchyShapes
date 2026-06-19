@@ -38,7 +38,7 @@ export function objectsToClipboardData(objects, raw=false) {
 	if(raw) {
 		resolved = objects
 	} else {
-		resolved = objects.map(objectToArray)
+		resolved = objects.map(o => o.toArray())
 	}
 
 	return JSON.stringify({
