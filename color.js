@@ -24,7 +24,7 @@ function parseColor(colorData) {
 		return colorData.map(n => Number(Number(n).toFixed(3)))
 	}
 
-	else if(colorData == "none" || colorData == "transparent") {
+	else if(!colorData || colorData == "none" || colorData == "transparent") {
 		return [0, 0, 0, 0]
 	}
 

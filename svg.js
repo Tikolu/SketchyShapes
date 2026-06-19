@@ -25,16 +25,22 @@ function createShape(element, styles) {
 	if(rect.height) shape.height = rect.height * SCALE
 
 	// Fill color
-	if(styles.fill && styles.fill != "none") {
-		const color = new Color(styles.fill)
-		if(styles.fillOpacity != color.alpha) color.alpha = Number(styles.fillOpacity)
-		if(color.alpha !== 1) {
-			shape.fillOpacity = color.alpha
-			color.alpha = 1
-		}
-		shape.fillColor = color
+	const color = new Color(styles.fill)
+	color.alpha *= Number(styles.fillOpacity || 1)
+	if(color.alpha !== 1) {
+		shape.fillOpacity = color.alpha
+		color.alpha = 1
 	}
-	if(!shape.fillColor) shape.fillEnabled = false
+
+	// Disable fill if fully transparent
+	if(shape.fillOpacity == 0) {
+		shape.fillEnabled = false
+		delete shape.fillColor
+		delete shape.fillOpacity
+	} else {
+		shape.fillColor = color
+		shape.fillEnabled = true
+	}
 
 	// Opacity
 	const opacity = Number(styles.opacity || 1)
