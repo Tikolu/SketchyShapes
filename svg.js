@@ -207,6 +207,11 @@ const converters = {
 
 		shape.shapeType = "Text Box"
 
+		// Remove fill
+		delete shape.fillColor
+		delete shape.fillOpacity
+		delete shape.fillEnabled
+
 		const text = new SketchyText({
 			content: element.textContent
 		})
