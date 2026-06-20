@@ -24,8 +24,41 @@ function createShape(element, styles) {
 	if(rect.width) shape.width = rect.width * SCALE
 	if(rect.height) shape.height = rect.height * SCALE
 
-	// Fill color and opacity
-	shape.fillColor = new Color(styles.fill)
+	// Fill gradient
+	if(styles.fill.startsWith("url(")) {
+		const gradientID = styles.fill.slice(4, -1).replaceAll(/["']/g, "")
+		const gradientElement = element.ownerSVGElement.querySelector(gradientID)
+		if(gradientElement) {
+			shape.fillGradientType = gradientElement.tagName == "linearGradient" ? "linear" : "radial"
+			shape.fillGradientColors = []
+			for(const stop of gradientElement.querySelectorAll("stop")) {
+				let offset = stop.getAttribute("offset")
+				if(offset.endsWith("%")) offset = Number(offset.replace("%", "")) / 100
+				else offset = Number(offset)
+
+				const stopStyle = window.getComputedStyle(stop)
+				const color = new Color(stopStyle.stopColor)
+				const opacity = Number(stopStyle.stopOpacity || 1)
+				color.alpha *= opacity
+				shape.fillGradientColors.push({color, offset})
+			}
+
+			const gradientTransform = gradientElement.gradientTransform.baseVal.consolidate()
+			if(gradientTransform) {
+				const {a, b, c, d, e, f} = gradientTransform.matrix
+				shape.fillGradientAngle = Math.atan2(b, a)
+			}
+
+		} else {
+			console.warn(`Gradient #${gradientID} not found`)
+		}
+
+	// Fill color
+	} else {
+		shape.fillColor = new Color(styles.fill)
+	}
+
+	// Fill opacity
 	const fillOpacity = Number(styles.fillOpacity || 1)
 	if(fillOpacity != 1) shape.fillOpacity = fillOpacity
 
@@ -268,13 +301,16 @@ const converters = {
 
 }
 
+const ignoreElements = ["linearGradient", "radialGradient"]
 export function SVGToObjects(svg) {
 	const objects = []
 
 	for(const element of svg.children) {
 		const converter = converters[element.tagName]
 		if(!converter) {
-			console.warn("Skipping unsupported element", element)
+			if(!ignoreElements.includes(element.tagName)) {
+				console.warn("Skipping unsupported element", element)
+			}
 			continue
 		}
 

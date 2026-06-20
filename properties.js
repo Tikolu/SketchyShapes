@@ -1,4 +1,11 @@
-import { LineStyles, LinePatterns, TextAlignments, LineJoins } from "./definitions.js"
+import {
+	LineStyles,
+	LinePatterns,
+	TextAlignments,
+	LineJoins,
+	GradientTypes,
+	GradientCenters
+} from "./definitions.js"
 import { Path } from "./path.js"
 import { Color } from "./color.js"
 
@@ -52,6 +59,21 @@ const propertyProcessors = {
 			else if(typeof v == "number") return [v, v, v, v]
 			else return [v.top, v.right, v.bottom, v.left]
 		}
+	],
+	fillGradientColors: [
+		v => v.map(c => ({
+			color: new Color(c[0]),
+			offset: c[1]
+		})),
+		v => v.map(c => [c.color.toHex(), c.offset])
+	],
+	fillGradientType: [
+		v => GradientTypes[v] || 0,
+		v => findKey(GradientTypes, v)
+	],
+	fillGradientCenter: [
+		v => GradientCenters[v] || 0,
+		v => findKey(GradientCenters, v)
 	]
 }
 

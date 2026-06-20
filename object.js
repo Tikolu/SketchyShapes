@@ -142,6 +142,23 @@ class SketchyShape extends SketchyObject {
 			this.borderEnabled = false
 		}
 
+		// Pad gradient colors
+		if(this.fillGradientColors?.length) {
+			this.fillGradientColors.sort((a, b) => a.offset - b.offset)
+			if(this.fillGradientColors[0].offset > 0) {
+				this.fillGradientColors.unshift({
+					color: this.fillGradientColors[0].color,
+					offset: 0
+				})
+			}
+			if(this.fillGradientColors.at(-1).offset < 1) {
+				this.fillGradientColors.push({
+					color: this.fillGradientColors.at(-1).color,
+					offset: 1
+				})
+			}
+		}
+
 		data.push(
 			Properties.findKey(ShapeTypes, this.shapeType),
 			[

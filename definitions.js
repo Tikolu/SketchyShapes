@@ -34,7 +34,11 @@ export const ShapeProperties = {
 
 	53: "textPadding",
 
+	60: "fillGradientType",
 	61: "fillGradientColors",
+	62: "fillGradientAngle",
+	145: "fillGradientRotationEnabled",
+	73: "fillGradientCenter",
 
 	126: "reflectionEnabled",
 
@@ -271,4 +275,18 @@ export const PathCommands = {
 	3: "Cubic",
 	4: "Arc",
 	5: "Close"
+}
+
+export const GradientTypes = {
+	0: "disabled",
+	1: "linear",
+	2: "radial"
+}
+
+export const GradientCenters = {
+	0: "center",
+	1: "top left",
+	2: "top right",
+	3: "bottom left",
+	4: "bottom right"
 }
