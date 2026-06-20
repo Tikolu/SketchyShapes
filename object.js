@@ -2,11 +2,6 @@ import { ObjectTypes, ShapeTypes, ShapeProperties, FormattingProperties } from "
 import { Path } from "./path.js"
 import * as Properties from "./properties.js"
 
-function decimalRound(value, p=4) {
-	const f = Math.pow(10, p)
-	return Math.round((value + Number.EPSILON) * f) / f
-}
-
 class SketchyObject {
 	static generateID() {
 		return `ga${Math.random().toString(16).slice(6)}`
@@ -120,13 +115,40 @@ class SketchyShape extends SketchyObject {
 	toArray() {
 		const data = super.toArray()
 
+		if(this.fillEnabled === false) {
+			this.fillOpacity = 0
+		}
+
+		// Extract transparency from fill
+		if(this.fillColor && this.fillColor.alpha !== 1) {
+			this.fillOpacity ??= 1
+			this.fillOpacity *= this.fillColor.alpha
+			this.fillColor.alpha = 1
+		}
+
+		// Disable fill if fully transparent
+		if(this.fillOpacity == 0) {
+			this.fillEnabled = false
+			delete this.fillColor
+			delete this.fillOpacity
+		} else if(this.fillEnabled === undefined && this.fillColor) {
+			this.fillEnabled = true
+		}
+
+		// Disable border if fully transparent
+		if(this.borderColor.alpha == 0) {
+			delete this.borderColor
+			delete this.borderWidth
+			this.borderEnabled = false
+		}
+
 		data.push(
 			Properties.findKey(ShapeTypes, this.shapeType),
 			[
-				decimalRound(this.widthScale ?? 1),
-				decimalRound(this.skewX ?? 0),
-				decimalRound(this.skewY ?? 0),
-				decimalRound(this.heightScale ?? 1),
+				Properties.decimalRound(this.widthScale ?? 1),
+				Properties.decimalRound(this.skewX ?? 0),
+				Properties.decimalRound(this.skewY ?? 0),
+				Properties.decimalRound(this.heightScale ?? 1),
 				Math.round(this.x ?? 0),
 				Math.round(this.y ?? 0)
 			],

@@ -9,6 +9,11 @@ export function findKey(definition, value) {
 	throw new Error(`Invalid value ${value}`)
 }
 
+export function decimalRound(value, p=4) {
+	const f = Math.pow(10, p)
+	return Math.round((value + Number.EPSILON) * f) / f
+}
+
 const propertyProcessors = {
 	shapeModifier0: v => Math.round(v),
 	shapeModifier1: v => Math.round(v),

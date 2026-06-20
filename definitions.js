@@ -23,6 +23,7 @@ export const ShapeProperties = {
 
 	18: "borderEnabled",
 	19: "borderColor",
+	20: "borderOpacity",
 	22: "borderWidth",
 
 	23: "lineJoin",

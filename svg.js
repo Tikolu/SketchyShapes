@@ -24,27 +24,10 @@ function createShape(element, styles) {
 	if(rect.width) shape.width = rect.width * SCALE
 	if(rect.height) shape.height = rect.height * SCALE
 
-	// Fill color
-	const color = new Color(styles.fill)
-	color.alpha *= Number(styles.fillOpacity || 1)
-	if(color.alpha !== 1) {
-		shape.fillOpacity = color.alpha
-		color.alpha = 1
-	}
-
-	// Disable fill if fully transparent
-	if(shape.fillOpacity == 0) {
-		shape.fillEnabled = false
-		delete shape.fillColor
-		delete shape.fillOpacity
-	} else {
-		shape.fillColor = color
-		shape.fillEnabled = true
-	}
-
-	// Opacity
-	const opacity = Number(styles.opacity || 1)
-	if(opacity != 1) shape.fillOpacity = opacity
+	// Fill color and opacity
+	shape.fillColor = new Color(styles.fill)
+	const fillOpacity = Number(styles.fillOpacity || 1)
+	if(fillOpacity != 1) shape.fillOpacity = fillOpacity
 
 	// Border
 	const strokeWidth = parsePx(styles.strokeWidth)
@@ -52,10 +35,17 @@ function createShape(element, styles) {
 		shape.borderWidth = SCALE * strokeWidth
 	}
 	shape.borderColor = new Color(styles.stroke)
-	if(shape.borderColor.alpha == 0) {
-		delete shape.borderColor
-		delete shape.borderWidth
-		shape.borderEnabled = false
+	const borderOpacity = Number(styles.strokeOpacity || 1)
+	if(borderOpacity != 1) shape.borderOpacity = borderOpacity
+
+	// Overall opacity
+	const opacity = Number(styles.opacity || 1)
+	if(opacity != 1) {
+		shape.fillOpacity ??= 1
+		shape.fillOpacity *= opacity
+
+		shape.borderOpacity ??= 1
+		shape.borderOpacity *= opacity
 	}
 
 	// Line join

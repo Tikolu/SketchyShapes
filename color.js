@@ -1,11 +1,12 @@
 function parseColor(colorData) {
 	// Hex string
-	if(/^#?[0-9a-fA-F]{6}$/.test(colorData)) {
+	if(/^#?[0-9a-fA-F]{6,8}$/.test(colorData)) {
 		const hex = colorData.replace(/^#/, "")
 		const r = parseInt(hex.slice(0, 2), 16) / 255
 		const g = parseInt(hex.slice(2, 4), 16) / 255
 		const b = parseInt(hex.slice(4, 6), 16) / 255
-		return [r, g, b].map(n => Number(n.toFixed(3)))
+		const a = parseInt(hex.slice(6, 8) || "FF", 16) / 255
+		return [r, g, b, a].map(n => Number(n.toFixed(3)))
 	}
 
 	// rgb()
@@ -55,13 +56,13 @@ export class Color {
 	}
 
 	toHex() {
-		if(this.alpha !== 1) {
-			console.warn(`Alpha value (${this.alpha}) ignored when serialising color`)
-		}
-
 		const rHex = Math.round(this.r * 255).toString(16).padStart(2, "0")
 		const gHex = Math.round(this.g * 255).toString(16).padStart(2, "0")
 		const bHex = Math.round(this.b * 255).toString(16).padStart(2, "0")
-		return `#${rHex}${gHex}${bHex}`
+		let aHex = ""
+		if(this.a !== undefined && this.a != 1) {
+			aHex = Math.round(this.a * 255).toString(16).padStart(2, "0")
+		}
+		return `#${rHex}${gHex}${bHex}${aHex}`
 	}
 }
