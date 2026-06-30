@@ -310,6 +310,18 @@ const converters = {
 		group.attachObject(...objects)
 
 		return [...objects, group]
+	},
+
+	a(element, styles) {
+		const objects = SVGToObjects(element)
+
+		const link = element.getAttribute("href")
+		if(link) {
+			for(const object of objects) {
+				object.linkAddress = link
+			}
+		}
+		return objects
 	}
 
 }

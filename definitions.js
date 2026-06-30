@@ -40,6 +40,8 @@ export const ShapeProperties = {
 	145: "fillGradientRotationEnabled",
 	73: "fillGradientCenter",
 
+	72: "linkAddress",
+
 	126: "reflectionEnabled",
 
 	135: "borderStyle"
@@ -217,6 +219,8 @@ export const FormattingProperties = {
 	4: "fontColor",
 	5: "fontFamily",
 	6: "fontSize",
+
+	8: "linkAddress",
 
 	12: "textAlign",
 	13: "marginLeft",
