@@ -3,6 +3,7 @@ import {
 	LinePatterns,
 	TextAlignments,
 	LineJoins,
+	LineCaps,
 	GradientTypes,
 	GradientCenters
 } from "./definitions.js"
@@ -46,6 +47,10 @@ const propertyProcessors = {
 	lineJoin: [
 		v => LineJoins[v] || 0,
 		v => findKey(LineJoins, v)
+	],
+	lineCap: [
+		v => LineCaps[v] || 0,
+		v => findKey(LineCaps, v)
 	],
 	textPadding: [
 		v => ({

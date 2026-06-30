@@ -95,7 +95,10 @@ function createShape(element, styles) {
 	}
 
 	// Line join
-	shape.lineJoin = styles["stroke-linejoin"] || "miter"
+	if(styles["stroke-linejoin"] && styles["stroke-linejoin"] != "round") shape.lineJoin = styles["stroke-linejoin"]
+
+	// Line cap
+	if(styles["stroke-linecap"] && styles["stroke-linecap"] != "butt") shape.lineCap = styles["stroke-linecap"]
 
 	// Points
 	if(element.hasAttribute("points")) {

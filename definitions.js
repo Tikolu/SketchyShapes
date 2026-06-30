@@ -27,6 +27,7 @@ export const ShapeProperties = {
 	22: "borderWidth",
 
 	23: "lineJoin",
+	24: "lineCap",
 
 	33: "textContent",
 
@@ -270,6 +271,12 @@ export const LineJoins = {
 	0: "miter",
 	1: "round",
 	2: "bevel"
+}
+
+export const LineCaps = {
+	0: "butt",
+	1: "round",
+	2: "square"
 }
 
 export const PathCommands = {
