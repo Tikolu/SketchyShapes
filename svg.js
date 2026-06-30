@@ -43,7 +43,7 @@ function createShape(element, styles) {
 				shape.fillGradientColors.push({color, offset})
 			}
 
-			const gradientTransform = gradientElement.gradientTransform.baseVal.consolidate()
+			const gradientTransform = gradientElement.gradientTransform?.baseVal.consolidate()
 			if(gradientTransform) {
 				const {a, b, c, d, e, f} = gradientTransform.matrix
 				shape.fillGradientAngle = Math.atan2(b, a)
