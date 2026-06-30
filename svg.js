@@ -100,6 +100,11 @@ function createShape(element, styles) {
 	// Line cap
 	if(styles["stroke-linecap"] && styles["stroke-linecap"] != "butt") shape.lineCap = styles["stroke-linecap"]
 
+	// Border pattern
+	if(styles["stroke-dasharray"] && styles["stroke-dasharray"] != "none") {
+		shape.borderPattern = "Dash"
+	}
+
 	// Points
 	if(element.hasAttribute("points")) {
 		const points = element.getAttribute("points").trim().split(/[\s,]+/)
