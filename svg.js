@@ -264,7 +264,7 @@ const converters = {
 
 			if(font == "sans-serif") font = "Arial"
 			else if(font == "serif") font = "Times New Roman"
-			else if(font == "monospace") font = "Courier New"
+			else if(font == "monospace") font = "Consolas"
 
 			formatting.fontFamily = font
 		}
