@@ -81,6 +81,19 @@ function createShape(element, styles) {
 		shape.borderOpacity *= opacity
 	}
 
+	// Parent opacity
+	for(let parent = element.parentElement; parent; parent = parent.parentElement) {
+		const parentStyles = window.getComputedStyle(parent)
+		const parentOpacity = Number(parentStyles.opacity || 1)
+		if(parentOpacity != 1) {
+			shape.fillOpacity ??= 1
+			shape.fillOpacity *= parentOpacity
+
+			shape.borderOpacity ??= 1
+			shape.borderOpacity *= parentOpacity
+		}
+	}
+
 	// Line join
 	shape.lineJoin = styles["stroke-linejoin"] || "miter"
 
